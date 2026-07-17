@@ -1,0 +1,5 @@
+id: semiconductors
+name: Semiconductors
+keywords: [semiconductor, chip, foundry, transistor, wafer]
+research_areas: [manufacturing, design, packaging]
+newsletter: {enabled: true, section_title: Semiconductors, maximum_items: 5}

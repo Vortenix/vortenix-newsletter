@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="180" viewBox="0 0 640 180" role="img" aria-labelledby="title desc">
+  <title id="title">Vortenix Newsletter logo placeholder</title>
+  <desc id="desc">A restrained blue V mark and the Vortenix Newsletter name.</desc>
+  <rect width="640" height="180" rx="20" fill="#f4f6fb"/>
+  <path d="M54 45h30l34 80 34-80h30l-50 110h-28z" fill="#273b8f"/>
+  <text x="210" y="92" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#172033">Vortenix</text>
+  <text x="212" y="128" font-family="Arial, sans-serif" font-size="22" fill="#526078">Research Newsletter</text>
+</svg>

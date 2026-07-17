@@ -1,0 +1,5 @@
+sources:
+  - name: Vortenix Demo Research
+    url: tests/fixtures/sample.rss
+    enabled: true
+    retrieve_articles: false

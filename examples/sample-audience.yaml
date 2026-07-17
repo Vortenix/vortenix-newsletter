@@ -1,0 +1,9 @@
+audiences:
+  - id: storage_weekly
+    name: Storage Weekly Research Brief
+    enabled: true
+    frequency: weekly
+    depth: detailed
+    recipients: [replace-with-your-email@example.com]
+    enabled_verticals: [storage]
+    topic_priorities: {storage: high}

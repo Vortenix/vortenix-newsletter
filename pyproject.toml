@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vortenix-newsletter"
+version = "0.1.0"
+description = "Collect, analyse, review, and deliver cited research newsletters"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+keywords = ["newsletter", "research", "rss", "analysis", "python"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Typing :: Typed",
+]
+dependencies = [
+  "alembic>=1.13", "beautifulsoup4>=4.12", "feedparser>=6.0",
+  "httpx>=0.27", "jinja2>=3.1", "pydantic>=2.7",
+  "pydantic-settings>=2.2", "pyyaml>=6.0", "sqlalchemy>=2.0", "typer>=0.12"
+]
+
+[project.optional-dependencies]
+dev = ["mypy>=1.10", "pytest>=8", "pytest-asyncio>=0.23", "pytest-cov>=5", "ruff>=0.5", "types-pyyaml>=6"]
+openai = ["openai>=1.40"]
+
+[project.urls]
+Homepage = "https://github.com/vortenix/vortenix-newsletter"
+Repository = "https://github.com/vortenix/vortenix-newsletter"
+Documentation = "https://github.com/vortenix/vortenix-newsletter/tree/main/docs"
+Issues = "https://github.com/vortenix/vortenix-newsletter/issues"
+Changelog = "https://github.com/vortenix/vortenix-newsletter/blob/main/CHANGELOG.md"
+
+[project.scripts]
+vortenix = "vortenix_newsletter.cli.app:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vortenix_newsletter"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+[tool.ruff.lint]
+select = ["F"]
+ignore = ["F401"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = ["-p", "no:cacheprovider"]
+
+[tool.mypy]
+python_version = "3.12"
+packages = ["vortenix_newsletter"]
+strict = false
+ignore_errors = true
+plugins = ["pydantic.mypy"]

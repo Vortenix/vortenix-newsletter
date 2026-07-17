@@ -1,0 +1,26 @@
+name: Feature request
+description: Propose a focused improvement
+title: "[Feature]: "
+labels: [enhancement, needs-triage]
+body:
+  - type: textarea
+    id: problem
+    attributes: {label: Problem, description: What user or contributor problem needs solving?}
+    validations: {required: true}
+  - type: textarea
+    id: proposal
+    attributes: {label: Proposed outcome, description: Describe behaviour and acceptance criteria rather than only implementation.}
+    validations: {required: true}
+  - type: textarea
+    id: alternatives
+    attributes: {label: Alternatives considered}
+  - type: textarea
+    id: architecture
+    attributes: {label: Architecture and compatibility impact, description: Note provider, configuration, persistence, security, or migration impact.}
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and the roadmap.
+          required: true

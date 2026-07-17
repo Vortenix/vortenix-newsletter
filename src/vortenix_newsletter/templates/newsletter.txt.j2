@@ -1,0 +1,16 @@
+VORTENIX — {{ newsletter.edition_date }}
+{{ newsletter.title }}
+
+{{ newsletter.executive_summary }}
+{% for section in newsletter.sections %}
+## {{ section.heading }}
+{{ section.introduction }}
+{% for item in section.items %}
+* {{ item.title }}
+  Development: {{ item.development }}
+  Interpretation: {{ item.significance }}
+{% for citation in item.citations %}  Source: {{ citation.source_title }} — {{ citation.url }}
+{% endfor %}{% endfor %}
+What to watch: {{ section.what_to_watch|join('; ') }}
+{% endfor %}
+Finance content is research information only and is not financial advice.

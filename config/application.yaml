@@ -1,0 +1,2 @@
+database_url: sqlite:///data/vortenix.db
+confidence_threshold: 0.35

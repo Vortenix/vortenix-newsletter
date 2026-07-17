@@ -1,0 +1,5 @@
+id: finance
+name: Finance
+keywords: [market, bank, investment, revenue, finance]
+research_areas: [markets, fintech, payments]
+newsletter: {enabled: true, section_title: Finance, maximum_items: 5}

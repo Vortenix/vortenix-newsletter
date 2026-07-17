@@ -1,0 +1,5 @@
+id: technology_radar
+name: Technology Radar
+keywords: [technology, software, cloud, open source, platform]
+research_areas: [software, cloud, emerging technology]
+newsletter: {enabled: true, section_title: Technology Radar, maximum_items: 5}

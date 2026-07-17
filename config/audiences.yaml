@@ -1,0 +1,9 @@
+audiences:
+  - id: anish_daily
+    name: Anish Daily Research Brief
+    enabled: true
+    frequency: daily
+    depth: detailed
+    recipients: [replace-with-your-email@example.com] # Placeholder: replace before SMTP use.
+    enabled_verticals: [ai_infrastructure, finance, semiconductors, technology_radar]
+    topic_priorities: {ai_infrastructure: high, finance: high, semiconductors: medium, technology_radar: high}
