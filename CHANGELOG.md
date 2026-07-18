@@ -9,6 +9,9 @@ All notable changes are documented here. This project follows [Keep a Changelog]
 - Private, Git-ignored subscriber profiles with independent vertical selections.
 - Shared research execution with one separately reviewable newsletter per subscriber.
 - Personalized recipient persistence and CLI commands for subscriber listing and generation.
+- Optional evidence-constrained OpenAI Structured Outputs with bounded inputs and deterministic fallback.
+- Per-subscriber deterministic (free) and LLM (premium) research tiers.
+- Requested-versus-actual analysis metadata and visible premium fallback warnings.
 
 ### Changed
 

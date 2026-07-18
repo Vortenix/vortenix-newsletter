@@ -7,6 +7,7 @@ subscribers:
     enabled: true
     frequency: daily
     depth: detailed
+    research_mode: deterministic
     enabled_verticals:
       - finance
     topic_priorities:
@@ -19,6 +20,7 @@ subscribers:
     enabled: true
     frequency: daily
     depth: concise
+    research_mode: llm
     enabled_verticals:
       - ai_infrastructure
       - semiconductors

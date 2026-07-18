@@ -68,10 +68,13 @@ Copy `config/subscribers.example.yaml` to `config/subscribers.local.yaml`. The l
 | `topic_priorities` | mapping | `{}` | Subscriber-specific priority metadata |
 | `frequency` | string | `daily` | Frequency metadata |
 | `depth` | string | `detailed` | Depth metadata |
+| `research_mode` | `deterministic` or `llm` | `deterministic` | Free or premium research tier |
 | `enabled` | boolean | `true` | Include in personalized generation |
 
-Subscriber IDs must be unique. Audience and vertical references are validated. A subscriber cannot select a vertical that is disabled for the parent audience during generation.
+Subscriber IDs must be unique. Audience and vertical references are validated. A subscriber cannot select a vertical that is disabled for the parent audience during generation. Deterministic subscribers never invoke an LLM. LLM subscribers use structured AI analysis for their selected verticals and fall back to deterministic analysis if the provider is unavailable.
 
 ## Provider environment variables
 
-`VORTENIX_EMAIL_PROVIDER` selects `console` (the safe default) or `smtp`. `VORTENIX_RECIPIENTS` is a comma-separated private recipient override, keeping real addresses out of tracked audience YAML. `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_EMAIL`, `SMTP_FROM_NAME`, and `SMTP_USE_TLS` configure SMTP. `SMTP_FROM_NAME` defaults to `Vortenix Newsletter` and controls the friendly sender name shown by email clients. `OPENAI_MODEL` and the standard `OPENAI_API_KEY` are consumed only when `OpenAIProvider` is constructed; LLM provider selection is not yet wired into the workflow.
+`VORTENIX_EMAIL_PROVIDER` selects `console` (the safe default) or `smtp`. `VORTENIX_RECIPIENTS` is a comma-separated private recipient override, keeping real addresses out of tracked audience YAML. `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_EMAIL`, `SMTP_FROM_NAME`, and `SMTP_USE_TLS` configure SMTP. `SMTP_FROM_NAME` defaults to `Vortenix Newsletter` and controls the friendly sender name shown by email clients.
+
+`VORTENIX_RESEARCH_MODE` selects `deterministic` (default) or `llm`. LLM mode requires `OPENAI_API_KEY`; `OPENAI_MODEL` selects the model. `VORTENIX_LLM_MAX_DOCUMENTS` defaults to `20` per vertical and `VORTENIX_LLM_MAX_DOCUMENT_CHARS` defaults to `6000` per document. See [LLM research mode](llm-research.md).
