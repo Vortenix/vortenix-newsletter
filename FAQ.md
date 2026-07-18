@@ -14,11 +14,11 @@ Implement the asynchronous `SourceConnector.fetch` protocol, return validated `S
 
 ## Can I use another LLM?
 
-Yes. Implement `LLMProvider.generate_structured`. The daily workflow does not yet select LLM providers, so provider wiring is additional work rather than configuration alone.
+Yes. Implement `LLMProvider.generate_structured` and update the provider factory. The workflow consumes the provider-neutral structured draft schema and retains application-owned citation validation and ranking.
 
 ## How do I disable AI?
 
-No action is needed: current research uses deterministic analysis. No OpenAI key is required by the demo or tests.
+Set `VORTENIX_RESEARCH_MODE=deterministic`, or omit it. No OpenAI key is required by deterministic mode or tests.
 
 ## Can SMTP send to my real address?
 
@@ -31,6 +31,10 @@ Research output can be incomplete or misleading. Approval creates a deliberate h
 ## Can subscribers receive different research verticals?
 
 Yes. Define each subscriber in the Git-ignored `config/subscribers.local.yaml` with their own `enabled_verticals`. Run `vortenix workflow run-personalized`; it creates a separate newsletter and recipient record for every subscriber. Each must be reviewed, approved, and sent independently.
+
+## Can free and premium subscribers use different research modes?
+
+Yes. Set `research_mode: deterministic` for free subscribers and `research_mode: llm` for premium subscribers. A single personalized run builds separate shared result sets for the active tiers. Premium analysis still falls back safely when API access fails.
 
 ## Is finance content financial advice?
 

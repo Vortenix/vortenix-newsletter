@@ -1,2 +1,4 @@
 from .deterministic import DeterministicProvider
-__all__=["DeterministicProvider"]
+from .factory import create_llm_provider, research_mode
+
+__all__ = ["DeterministicProvider", "create_llm_provider", "research_mode"]

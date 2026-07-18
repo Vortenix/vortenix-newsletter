@@ -14,7 +14,7 @@
 Vortenix Newsletter collects source material, analyses it through independent research verticals, composes cited briefings, and stops for human review before delivery. It is designed for researchers and developers who want a transparent, locally runnable foundation rather than an opaque newsletter generator.
 
 > [!IMPORTANT]
-> This project is alpha software. Console delivery remains the safe default; SMTP can be enabled locally through an ignored `.env` after explicit approval. OpenAI analysis is not yet selected by the daily workflow.
+> This project is alpha software. Console delivery remains the safe default; SMTP and structured OpenAI analysis are explicit local opt-ins. Newsletter delivery always retains the approval gate.
 
 ## Why Vortenix?
 
@@ -27,6 +27,7 @@ Research newsletters combine unreliable networks, untrusted source text, topic-s
 - YAML-driven generic verticals with validated ranking weights.
 - Private subscriber profiles with independent vertical selections and newsletters.
 - Offline deterministic analysis with extractive summaries, pain-point and company heuristics, citations, and reproducible scores.
+- Optional evidence-constrained OpenAI Structured Outputs with deterministic fallback.
 - HTML, plain-text, and JSON rendering with escaped source content.
 - SQLite/SQLAlchemy persistence separated from Pydantic domain models.
 - Explicit `READY_FOR_REVIEW → APPROVED → SENT` workflow.
@@ -146,7 +147,23 @@ Run `vortenix config validate` after edits. The [configuration reference](docs/u
 
 **Deterministic mode** is the current workflow and requires no AI service. It matches configured keywords, extracts concise source sentences, applies simple entity/pain-point heuristics, retains citations, and calculates weighted scores outside any prompt.
 
-**LLM mode** has an optional `OpenAIProvider` implementing the structured provider contract. It is not currently wired into the daily workflow. Installing `.[openai]` or setting an API key alone does not activate it. A future integration must preserve evidence validation, deterministic fallback, and explicit approval.
+**LLM mode** uses the optional `OpenAIProvider` and Pydantic Structured Outputs. It sends only bounded, keyword-matched configured documents, requires supplied document IDs for citations, rejects invented citation IDs, calculates scores in application code, and falls back per vertical to deterministic analysis on failure.
+
+Enable it locally:
+
+```console
+python -m pip install -e ".[openai,dev]"
+```
+
+```dotenv
+VORTENIX_RESEARCH_MODE=llm
+OPENAI_API_KEY=your-project-api-key
+OPENAI_MODEL=gpt-4.1-mini
+VORTENIX_LLM_MAX_DOCUMENTS=20
+VORTENIX_LLM_MAX_DOCUMENT_CHARS=6000
+```
+
+The key belongs only in the Git-ignored `.env`. API use may incur charges. See [LLM research mode](docs/user-guide/llm-research.md) before enabling it.
 
 ## Extending the project
 
@@ -176,20 +193,23 @@ vortenix newsletter send ID [--force]
 vortenix subscribers list [--audience ID]
 vortenix workflow run-daily [--audience ID] [--demo]
 vortenix workflow run-personalized [--audience ID] [--subscriber ID] [--demo]
+vortenix workflow run-scheduled [--audience ID]
 ```
 
 ### Personalized subscriber newsletters
 
-Copy `config/subscribers.example.yaml` to `config/subscribers.local.yaml` and give each subscriber an ID, private email address, and any subset of the audience's enabled verticals. The local file is ignored by Git. Then generate separate review drafts:
+Copy `config/subscribers.example.yaml` to `config/subscribers.local.yaml` and give each subscriber an ID, private email address, research mode, and any subset of the audience's enabled verticals. Use `research_mode: deterministic` for the free tier or `research_mode: llm` for the premium tier. The local file is ignored by Git. Then generate separate review drafts:
 
 ```console
 vortenix subscribers list --audience anish_daily
 vortenix workflow run-personalized --audience anish_daily --demo
 ```
 
-Sources are collected once and each required vertical is analysed once. Composition then creates one newsletter per subscriber containing only their selected sections. Every newsletter remains `READY_FOR_REVIEW` until independently approved and sent.
+Sources are collected once. Required verticals are analysed once per active research tier, because deterministic and LLM results are intentionally independent. Composition then creates one newsletter per subscriber containing only their selected sections and records the requested mode. Every newsletter remains `READY_FOR_REVIEW` until independently approved and sent.
 
 See the [CLI reference](docs/reference/cli.md) for current semantics and limitations.
+
+For explicitly opted-in, no-review delivery to all subscribers at 8:00 AM, see the [Windows scheduling guide](docs/user-guide/scheduling.md). Secrets remain in the Git-ignored `.env`; the scheduled command refuses to run unless automatic SMTP sending is enabled there.
 
 ## Project layout
 

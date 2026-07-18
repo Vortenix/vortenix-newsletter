@@ -1,13 +1,19 @@
 from __future__ import annotations
 from datetime import UTC, date, datetime
-from typing import Any
+from typing import Any, Literal
 from uuid import uuid4
 from pydantic import BaseModel, Field, HttpUrl
 from .enums import NewsletterStatus, SourceType
 from .exceptions import InvalidStatusTransition
 
-def utcnow() -> datetime: return datetime.now(UTC)
-def uid() -> str: return str(uuid4())
+
+def utcnow() -> datetime:
+    return datetime.now(UTC)
+
+
+def uid() -> str:
+    return str(uuid4())
+
 
 class SourceDocument(BaseModel):
     id: str = Field(default_factory=uid)
@@ -22,11 +28,13 @@ class SourceDocument(BaseModel):
     content_hash: str
     metadata: dict[str, Any] = Field(default_factory=dict)
 
+
 class Citation(BaseModel):
     source_document_id: str
     source_title: str
     url: HttpUrl
     supporting_excerpt: str = Field(max_length=500)
+
 
 class ResearchFinding(BaseModel):
     id: str = Field(default_factory=uid)
@@ -50,6 +58,7 @@ class ResearchFinding(BaseModel):
     created_at: datetime = Field(default_factory=utcnow)
     rank_score: float = Field(default=0, ge=0, le=1)
 
+
 class VerticalResearchResult(BaseModel):
     id: str = Field(default_factory=uid)
     vertical_id: str
@@ -59,6 +68,9 @@ class VerticalResearchResult(BaseModel):
     emerging_trends: list[str] = Field(default_factory=list)
     important_companies: list[str] = Field(default_factory=list)
     what_to_watch: list[str] = Field(default_factory=list)
+    analysis_mode: Literal["deterministic", "llm"] = "deterministic"
+    analysis_warnings: list[str] = Field(default_factory=list)
+
 
 class Audience(BaseModel):
     id: str
@@ -69,6 +81,7 @@ class Audience(BaseModel):
     frequency: str = "daily"
     depth: str = "detailed"
     enabled: bool = True
+
 
 class Subscriber(BaseModel):
     """Private subscriber preferences loaded from local configuration."""
@@ -81,6 +94,7 @@ class Subscriber(BaseModel):
     topic_priorities: dict[str, str] = Field(default_factory=dict)
     frequency: str = "daily"
     depth: str = "detailed"
+    research_mode: Literal["deterministic", "llm"] = "deterministic"
     enabled: bool = True
 
     def personalized_audience(self, audience: Audience) -> Audience:
@@ -90,7 +104,9 @@ class Subscriber(BaseModel):
         allowed = set(audience.enabled_verticals)
         verticals = [vertical for vertical in self.enabled_verticals if vertical in allowed]
         if not verticals:
-            raise ValueError(f"Subscriber {self.id} has no enabled verticals in audience {audience.id}")
+            raise ValueError(
+                f"Subscriber {self.id} has no enabled verticals in audience {audience.id}"
+            )
         return Audience(
             id=audience.id,
             name=audience.name,
@@ -102,6 +118,7 @@ class Subscriber(BaseModel):
             enabled=self.enabled,
         )
 
+
 class NewsletterSection(BaseModel):
     vertical_id: str
     heading: str
@@ -109,13 +126,20 @@ class NewsletterSection(BaseModel):
     items: list[ResearchFinding]
     what_to_watch: list[str] = Field(default_factory=list)
 
+
 TRANSITIONS = {
     NewsletterStatus.DRAFT: {NewsletterStatus.READY_FOR_REVIEW},
     NewsletterStatus.READY_FOR_REVIEW: {NewsletterStatus.APPROVED, NewsletterStatus.REJECTED},
-    NewsletterStatus.APPROVED: {NewsletterStatus.SCHEDULED, NewsletterStatus.SENT, NewsletterStatus.FAILED},
+    NewsletterStatus.APPROVED: {
+        NewsletterStatus.SCHEDULED,
+        NewsletterStatus.SENT,
+        NewsletterStatus.FAILED,
+    },
     NewsletterStatus.SCHEDULED: {NewsletterStatus.SENT, NewsletterStatus.FAILED},
     NewsletterStatus.FAILED: {NewsletterStatus.APPROVED},
 }
+
+
 class Newsletter(BaseModel):
     id: str = Field(default_factory=uid)
     title: str
@@ -126,31 +150,44 @@ class Newsletter(BaseModel):
     audience_id: str
     subscriber_id: str | None = None
     recipients: list[str] = Field(default_factory=list)
+    research_mode: Literal["deterministic", "llm"] = "deterministic"
+    analysis_mode: Literal["deterministic", "llm", "mixed"] = "deterministic"
+    analysis_warnings: list[str] = Field(default_factory=list)
     html_path: str | None = None
     text_path: str | None = None
     json_path: str | None = None
     created_at: datetime = Field(default_factory=utcnow)
     approved_at: datetime | None = None
     sent_at: datetime | None = None
+
     def transition_to(self, status: NewsletterStatus) -> None:
         if status not in TRANSITIONS.get(self.status, set()):
             raise InvalidStatusTransition(f"Cannot transition {self.status} to {status}")
         self.status = status
-        if status == NewsletterStatus.APPROVED: self.approved_at = utcnow()
-        if status == NewsletterStatus.SENT: self.sent_at = utcnow()
+        if status == NewsletterStatus.APPROVED:
+            self.approved_at = utcnow()
+        if status == NewsletterStatus.SENT:
+            self.sent_at = utcnow()
+
 
 class SourceRequest(BaseModel):
     source_name: str
     url: str
     lookback_hours: int = 24
     retrieve_articles: bool = False
+
+
 class ResearchContext(BaseModel):
     vertical_id: str
     lookback_hours: int = 24
+
+
 class ResearchPlan(BaseModel):
     vertical_id: str
     research_areas: list[str]
     keywords: list[str]
+
+
 class EmailMessage(BaseModel):
     subject: str
     recipients: list[str]
@@ -158,7 +195,18 @@ class EmailMessage(BaseModel):
     html_body: str
     html_path: str | None = None
     text_path: str | None = None
+
+
 class DeliveryResult(BaseModel):
     success: bool
     provider_message_id: str | None = None
+    error: str | None = None
+
+
+class ScheduledDeliveryOutcome(BaseModel):
+    subscriber_id: str
+    newsletter_id: str
+    success: bool
+    research_mode: Literal["deterministic", "llm"]
+    analysis_mode: Literal["deterministic", "llm", "mixed"]
     error: str | None = None
