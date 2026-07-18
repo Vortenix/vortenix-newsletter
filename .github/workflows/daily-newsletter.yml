@@ -2,7 +2,7 @@ name: Daily subscriber newsletters
 
 on:
   schedule:
-    - cron: "0 15 * * *"
+    - cron: "5 15 * * *"
       timezone: "Europe/Dublin"
   workflow_dispatch:
 

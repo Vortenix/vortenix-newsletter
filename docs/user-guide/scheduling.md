@@ -11,25 +11,25 @@ VORTENIX_ALLOW_AUTOMATIC_SEND=true
 
 Keep the SMTP username and app password in that same `.env`. Do not put secrets in the PowerShell script or Task Scheduler arguments.
 
-## Create the 3:00 PM task
+## Create the 3:05 PM task
 
 Open **Task Scheduler**, select **Create Task**, and use:
 
 - **General:** `Vortenix Daily Newsletter`; select **Run whether user is logged on or not**.
-- **Trigger:** Daily at `15:00:00`, enabled.
+- **Trigger:** Daily at `15:05:00`, enabled.
 - **Action / Program:** `powershell.exe`
 - **Arguments:** `-NoProfile -ExecutionPolicy Bypass -File "C:\Anish\ai-projects\Vortenix\scripts\run_scheduled_newsletters.ps1"`
 - **Start in:** `C:\Anish\ai-projects\Vortenix`
 - **Conditions:** enable **Wake the computer to run this task** if appropriate; require a network connection.
 - **Settings:** enable **Run task as soon as possible after a scheduled start is missed** and prevent overlapping instances.
 
-The schedule uses the Windows machine's local timezone. The PC must be on (or able to wake), connected to the internet, and able to access the repository and `.env` at 3:00 PM.
+The schedule uses the Windows machine's local timezone. The PC must be on (or able to wake), connected to the internet, and able to access the repository and `.env` at 3:05 PM.
 
 Test the task using Task Scheduler's **Run** action. This performs real delivery to every enabled subscriber.
 
 ## GitHub Actions (recommended for cloud scheduling)
 
-The workflow `.github/workflows/daily-newsletter.yml` runs every day at 3:00 PM in the `Europe/Dublin` timezone and can also be started manually. Scheduled workflows run from the repository's default branch, so merge the workflow before expecting the schedule to start.
+The workflow `.github/workflows/daily-newsletter.yml` runs every day at 3:05 PM in the `Europe/Dublin` timezone and can also be started manually. Scheduled workflows run from the repository's default branch, so merge the workflow before expecting the schedule to start.
 
 Create these repository secrets under **Settings → Secrets and variables → Actions**:
 
