@@ -1,4 +1,4 @@
-VORTENIX — {{ newsletter.edition_date }}
+VORTENIX - {{ newsletter.edition_date }}
 {{ newsletter.title }}
 
 {{ newsletter.executive_summary }}
@@ -9,7 +9,7 @@ VORTENIX — {{ newsletter.edition_date }}
 * {{ item.title }}
   Development: {{ item.development }}
   Interpretation: {{ item.significance }}
-{% for citation in item.citations %}  Source: {{ citation.source_title }} — {{ citation.url }}
+{% for citation in item.citations %}  Source: {{ citation.source_title }} - {{ citation.url }}
 {% endfor %}{% endfor %}
 What to watch: {{ section.what_to_watch|join('; ') }}
 {% endfor %}

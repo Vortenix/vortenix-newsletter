@@ -9,4 +9,4 @@ def compose(audience: Audience,results: list[VerticalResearchResult],configs: li
             if key not in seen and len(chosen)<maximum: seen.add(key); chosen.append(finding)
         sections.append(NewsletterSection(vertical_id=result.vertical_id,heading=str(cfg.newsletter.get("section_title",cfg.name)),introduction=result.executive_summary,items=chosen,what_to_watch=result.what_to_watch))
     summary=" ".join(s.introduction for s in sections) or "No qualifying developments were found."
-    return Newsletter(title=f"Vortenix Research Brief — {audience.name}",executive_summary=summary,sections=sections,audience_id=audience.id)
+    return Newsletter(title=f"Vortenix Research Brief - {audience.name}",executive_summary=summary,sections=sections,audience_id=audience.id)
