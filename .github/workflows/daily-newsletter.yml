@@ -1,0 +1,70 @@
+name: Daily subscriber newsletters
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+      timezone: "Europe/Dublin"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-subscriber-newsletters
+  cancel-in-progress: false
+
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VORTENIX_DATABASE_URL: sqlite:///data/vortenix.db
+      VORTENIX_EMAIL_PROVIDER: smtp
+      VORTENIX_ALLOW_AUTOMATIC_SEND: "true"
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: "587"
+      SMTP_USE_TLS: "true"
+      SMTP_FROM_NAME: Vortenix Newsletter
+      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      SMTP_FROM_EMAIL: ${{ secrets.SMTP_FROM_EMAIL }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_MODEL: gpt-4.1-mini
+      VORTENIX_LLM_MAX_DOCUMENTS: "20"
+      VORTENIX_LLM_MAX_DOCUMENT_CHARS: "6000"
+      VORTENIX_SUBSCRIBERS_B64: ${{ secrets.VORTENIX_SUBSCRIBERS_B64 }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install application
+        run: python -m pip install -e ".[openai]"
+
+      - name: Restore private subscriber configuration
+        shell: python
+        run: |
+          import base64
+          import os
+          from pathlib import Path
+
+          encoded = os.environ.get("VORTENIX_SUBSCRIBERS_B64", "")
+          if not encoded:
+              raise SystemExit("VORTENIX_SUBSCRIBERS_B64 is not configured")
+          Path("config/subscribers.local.yaml").write_bytes(base64.b64decode(encoded, validate=True))
+
+      - name: Validate configuration
+        run: python -m vortenix_newsletter.cli.app config validate
+
+      - name: Generate and deliver subscriber newsletters
+        run: python -m vortenix_newsletter.cli.app workflow run-scheduled --audience anish_daily
+
+      - name: Remove reconstructed subscriber configuration
+        if: always()
+        run: rm -f config/subscribers.local.yaml

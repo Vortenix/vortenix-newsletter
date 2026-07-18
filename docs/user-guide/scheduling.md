@@ -26,3 +26,25 @@ Open **Task Scheduler**, select **Create Task**, and use:
 The schedule uses the Windows machine's local timezone. The PC must be on (or able to wake), connected to the internet, and able to access the repository and `.env` at 8:00 AM.
 
 Test the task using Task Scheduler's **Run** action. This performs real delivery to every enabled subscriber.
+
+## GitHub Actions (recommended for cloud scheduling)
+
+The workflow `.github/workflows/daily-newsletter.yml` runs every day at 8:00 AM in the `Europe/Dublin` timezone and can also be started manually. Scheduled workflows run from the repository's default branch, so merge the workflow before expecting the schedule to start.
+
+Create these repository secrets under **Settings → Secrets and variables → Actions**:
+
+- `SMTP_USERNAME`: Gmail account used to send.
+- `SMTP_PASSWORD`: Gmail app password, not the normal account password.
+- `SMTP_FROM_EMAIL`: sender Gmail address.
+- `OPENAI_API_KEY`: optional for premium research; failures fall back to deterministic research.
+- `VORTENIX_SUBSCRIBERS_B64`: Base64 representation of `config/subscribers.local.yaml`.
+
+From an authenticated PowerShell session, the subscriber secret can be created without printing its contents:
+
+```powershell
+$subscriberBytes = [System.IO.File]::ReadAllBytes("config/subscribers.local.yaml")
+$subscriberSecret = [Convert]::ToBase64String($subscriberBytes)
+$subscriberSecret | gh secret set VORTENIX_SUBSCRIBERS_B64
+```
+
+The workflow grants its GitHub token read-only repository access, prevents overlapping newsletter runs, reconstructs the ignored subscriber file only on the temporary runner, and removes it in an `always()` cleanup step. Do not place private values directly in the workflow YAML.
