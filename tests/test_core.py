@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from pathlib import Path
 import json
 import pytest
@@ -35,6 +36,8 @@ from vortenix_newsletter.research.llm_models import (
     LLMFindingDraft,
     LLMVerticalDraft,
 )
+from vortenix_newsletter.ingestion.reddit_connector import RedditConnector
+from vortenix_newsletter.verticals.generic import GenericVertical
 
 
 class FakeLLMProvider:
@@ -97,6 +100,15 @@ class FakeEmailProvider:
 def test_config_and_registry():
     cfg = load_config()
     assert len(cfg.verticals) == 4
+    assert len(cfg.sources) >= 35
+    assert any(source.type == "hacker_news" and source.enabled for source in cfg.sources)
+    assert any(source.type == "crossref" and source.enabled for source in cfg.sources)
+    assert any(source.type == "gdelt" and source.enabled for source in cfg.sources)
+    assert all(
+        not source.llm_allowed
+        for source in cfg.sources
+        if source.trust_level == "community"
+    )
     assert set(VerticalRegistry(cfg.verticals).ids()) == set(x.id for x in cfg.verticals)
 
 
@@ -390,3 +402,55 @@ async def test_scheduled_delivery_sends_each_subscriber_and_isolates_failures(mo
         ["success@example.com"],
         ["failure@example.com"],
     ]
+
+
+def test_reddit_documents_are_marked_as_non_llm_community_signals():
+    request = SourceRequest(
+        source_name="Reddit Community Signals",
+        url="technology",
+        trust_level="community",
+        llm_allowed=False,
+    )
+    payload = {
+        "data": {
+            "children": [
+                {
+                    "data": {
+                        "title": "Cloud platform operating cost discussion",
+                        "selftext": "Users report a cloud software cost challenge.",
+                        "permalink": "/r/technology/comments/example/discussion/",
+                        "author": "community_member",
+                        "created_utc": datetime.now(UTC).timestamp(),
+                        "subreddit": "technology",
+                        "score": 42,
+                        "num_comments": 12,
+                        "over_18": False,
+                    }
+                }
+            ]
+        }
+    }
+    documents = RedditConnector._documents(request, payload, datetime.min.replace(tzinfo=UTC))
+    assert len(documents) == 1
+    assert documents[0].metadata["trust_level"] == "community"
+    assert documents[0].metadata["llm_allowed"] is False
+
+
+@pytest.mark.asyncio
+async def test_community_documents_are_excluded_from_llm_and_downranked():
+    cfg = load_config()
+    vertical = next(item for item in cfg.verticals if item.id == "technology_radar")
+    document = SourceDocument(
+        source_type="reddit",
+        source_name="Reddit Community Signals",
+        title="Cloud software platform discussion",
+        content="Community users report a cloud software platform cost challenge.",
+        url="https://www.reddit.com/r/technology/comments/example/discussion/",
+        content_hash="reddit-fixture",
+        metadata={"trust_level": "community", "llm_allowed": False},
+    )
+    llm_result = await LLMResearchAnalyser(FakeLLMProvider()).analyse(vertical, [document])
+    deterministic_result = await GenericVertical(vertical).analyse([document])
+    assert llm_result.findings == []
+    assert deterministic_result.findings[0].confidence_score == 0.45
+    assert deterministic_result.findings[0].evidence_score == 0.35

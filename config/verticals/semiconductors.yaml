@@ -1,5 +1,5 @@
 id: semiconductors
 name: Semiconductors
-keywords: [semiconductor, chip, foundry, transistor, wafer]
-research_areas: [manufacturing, design, packaging]
+keywords: [semiconductor, chip, foundry, transistor, wafer, fabrication, lithography, packaging, HBM, GPU, processor, supply chain]
+research_areas: [manufacturing, design, equipment, memory, advanced packaging, supply chain]
 newsletter: {enabled: true, section_title: Semiconductors, maximum_items: 5}

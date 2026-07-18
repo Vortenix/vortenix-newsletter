@@ -12,6 +12,14 @@ class VerticalConfig(BaseModel):
     ranking_weights: RankingWeights=Field(default_factory=RankingWeights)
     newsletter: dict[str,object]=Field(default_factory=dict)
 class SourceConfig(BaseModel):
-    name: str; url: str; enabled: bool=True; retrieve_articles: bool=False
+    name: str
+    url: str
+    type: str = "rss"
+    enabled: bool = True
+    retrieve_articles: bool = False
+    trust_level: str = "industry"
+    llm_allowed: bool = True
+    lookback_hours: int = Field(default=24, ge=1, le=24 * 30)
+    verticals: list[str] = Field(default_factory=list)
 class AppConfig(BaseModel):
     database_url: str="sqlite:///data/vortenix.db"; confidence_threshold: float=.35

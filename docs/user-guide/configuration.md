@@ -17,10 +17,19 @@ Each item under `sources` accepts:
 | --- | --- | --- | --- |
 | `name` | string | required | Human-readable source name |
 | `url` | string | required | HTTP(S) feed URL or local fixture path |
+| `type` | connector ID | `rss` | `rss`, `reddit`, `hacker_news`, `crossref`, `fred`, or `gdelt` |
 | `enabled` | boolean | `true` | Include the source |
 | `retrieve_articles` | boolean | `false` | Fetch linked pages after feed parsing |
+| `trust_level` | string | `industry` | Provenance tier recorded on collected documents |
+| `llm_allowed` | boolean | `true` | Whether source content may be sent to the configured LLM |
+| `lookback_hours` | integer | `24` | Per-source collection window (1 hour to 30 days) |
+| `verticals` | list of IDs | `[]` | Restrict source evidence to selected verticals; empty means all |
 
 Remote requests have a 15-second timeout, three bounded attempts, exponential backoff, a user agent, and a 2 MB default body limit. The workflow uses a 24-hour lookback; demo mode substitutes the checked-in fixture and a long lookback.
+
+The production source list includes official AI, infrastructure, finance, semiconductor, security, startup, and software feeds; arXiv/Crossref research; Hacker News; GitHub releases; and GDELT discovery. The strict 24-hour default keeps each edition focused on the preceding day; quiet periods may therefore produce empty sections. Community sources are down-ranked and excluded from LLM prompts.
+
+Reddit is configured as a disabled community-signal source. Enable it only after obtaining approved Reddit Data API credentials and setting `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, and a descriptive `REDDIT_USER_AGENT`. FRED is disabled until `FRED_API_KEY` is set. `CROSSREF_MAILTO` is optional but identifies polite Crossref API usage. World Bank, IMF, OECD, Eurostat, OpenAlex, Semantic Scholar, news-search services, and licensed publishers are explicit disabled placeholders until a compliant connector or licence is configured. Disabled placeholders are never requested.
 
 ## `audiences.yaml`
 

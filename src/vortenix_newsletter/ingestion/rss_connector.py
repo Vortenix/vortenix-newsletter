@@ -38,6 +38,6 @@ class RSSConnector:
                 url=canonical_url(entry.link); content=clean_html(entry.get("summary",entry.get("description","")))
                 if request.retrieve_articles and url.startswith("http"): content=clean_html((await self._bytes(url)).decode(errors="replace"))
                 digest=sha256((url+"\n"+content).encode()).hexdigest()
-                output.append(SourceDocument(source_type=SourceType.RSS,source_name=request.source_name,title=clean_html(entry.title),content=content[:50_000],url=url,author=entry.get("author"),published_at=published,content_hash=digest))
+                output.append(SourceDocument(source_type=SourceType.RSS,source_name=request.source_name,title=clean_html(entry.title),content=content[:50_000],url=url,author=entry.get("author"),published_at=published,content_hash=digest,metadata={"trust_level": request.trust_level, "llm_allowed": request.llm_allowed, "verticals": request.verticals}))
             except (KeyError,ValueError,TypeError): continue
         return output
