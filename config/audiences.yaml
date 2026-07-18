@@ -1,6 +1,6 @@
 audiences:
   - id: anish_daily
-    name: Anish Daily Research Brief
+    name: Daily Research Brief
     enabled: true
     frequency: daily
     depth: detailed

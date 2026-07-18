@@ -70,6 +70,38 @@ class Audience(BaseModel):
     depth: str = "detailed"
     enabled: bool = True
 
+class Subscriber(BaseModel):
+    """Private subscriber preferences loaded from local configuration."""
+
+    id: str
+    name: str
+    email: str
+    audience_id: str
+    enabled_verticals: list[str]
+    topic_priorities: dict[str, str] = Field(default_factory=dict)
+    frequency: str = "daily"
+    depth: str = "detailed"
+    enabled: bool = True
+
+    def personalized_audience(self, audience: Audience) -> Audience:
+        """Build an audience view restricted to this subscriber's selected verticals."""
+        if self.audience_id != audience.id:
+            raise ValueError(f"Subscriber {self.id} does not belong to audience {audience.id}")
+        allowed = set(audience.enabled_verticals)
+        verticals = [vertical for vertical in self.enabled_verticals if vertical in allowed]
+        if not verticals:
+            raise ValueError(f"Subscriber {self.id} has no enabled verticals in audience {audience.id}")
+        return Audience(
+            id=audience.id,
+            name=audience.name,
+            recipients=[self.email],
+            enabled_verticals=verticals,
+            topic_priorities=self.topic_priorities,
+            frequency=self.frequency,
+            depth=self.depth,
+            enabled=self.enabled,
+        )
+
 class NewsletterSection(BaseModel):
     vertical_id: str
     heading: str
@@ -92,6 +124,8 @@ class Newsletter(BaseModel):
     sections: list[NewsletterSection]
     status: NewsletterStatus = NewsletterStatus.DRAFT
     audience_id: str
+    subscriber_id: str | None = None
+    recipients: list[str] = Field(default_factory=list)
     html_path: str | None = None
     text_path: str | None = None
     json_path: str | None = None

@@ -11,7 +11,9 @@
 | `vortenix newsletter show ID` | Print newsletter JSON |
 | `vortenix newsletter approve ID` | Approve a review-ready newsletter |
 | `vortenix newsletter reject ID` | Reject a review-ready newsletter |
-| `vortenix newsletter send ID [--force]` | Console-deliver an approved newsletter |
+| `vortenix newsletter send ID [--force]` | Deliver an approved newsletter through the configured provider |
 | `vortenix workflow run-daily --demo` | Run the complete offline fixture workflow |
+| `vortenix subscribers list [--audience ID]` | List private subscriber IDs and selected verticals without printing addresses |
+| `vortenix workflow run-personalized --demo` | Generate one review-ready newsletter per private subscriber |
 
 Use `python -m vortenix_newsletter.cli.app` in place of `vortenix` if the script directory is not on `PATH`.

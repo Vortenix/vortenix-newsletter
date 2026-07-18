@@ -54,6 +54,24 @@ The checked-in address is deliberately a placeholder. Console delivery is the on
 
 Ranking weights must total within `0.01` of `1.0`. Run `vortenix config validate` after every change.
 
+## `subscribers.local.yaml`
+
+Copy `config/subscribers.example.yaml` to `config/subscribers.local.yaml`. The local file is ignored by Git because it contains private email addresses and preferences.
+
+| Option | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `id` | string | required | Private stable subscriber identifier |
+| `name` | string | required | Subscriber display name |
+| `email` | string | required | Recipient used only for that subscriber's newsletter |
+| `audience_id` | string | required | Parent audience that bounds available verticals |
+| `enabled_verticals` | list of strings | required | Sections included for this subscriber |
+| `topic_priorities` | mapping | `{}` | Subscriber-specific priority metadata |
+| `frequency` | string | `daily` | Frequency metadata |
+| `depth` | string | `detailed` | Depth metadata |
+| `enabled` | boolean | `true` | Include in personalized generation |
+
+Subscriber IDs must be unique. Audience and vertical references are validated. A subscriber cannot select a vertical that is disabled for the parent audience during generation.
+
 ## Provider environment variables
 
 `VORTENIX_EMAIL_PROVIDER` selects `console` (the safe default) or `smtp`. `VORTENIX_RECIPIENTS` is a comma-separated private recipient override, keeping real addresses out of tracked audience YAML. `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_EMAIL`, `SMTP_FROM_NAME`, and `SMTP_USE_TLS` configure SMTP. `SMTP_FROM_NAME` defaults to `Vortenix Newsletter` and controls the friendly sender name shown by email clients. `OPENAI_MODEL` and the standard `OPENAI_API_KEY` are consumed only when `OpenAIProvider` is constructed; LLM provider selection is not yet wired into the workflow.

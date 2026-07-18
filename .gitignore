@@ -1,4 +1,5 @@
 .env
+config/subscribers.local.yaml
 .venv/
 __pycache__/
 *.db

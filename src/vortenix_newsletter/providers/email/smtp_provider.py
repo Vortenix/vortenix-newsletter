@@ -1,6 +1,7 @@
 import asyncio,os,smtplib
+from datetime import UTC, datetime
 from email.message import EmailMessage as SMTPMessage
-from email.utils import formataddr
+from email.utils import format_datetime, formataddr, make_msgid
 from vortenix_newsletter.domain.exceptions import ConfigurationError
 from vortenix_newsletter.domain.models import DeliveryResult,EmailMessage
 class SMTPEmailProvider:
@@ -13,7 +14,7 @@ class SMTPEmailProvider:
         if self.username and not self.password:
             raise ConfigurationError("SMTP_PASSWORD is required when SMTP_USERNAME is set")
     async def send(self,message: EmailMessage)->DeliveryResult:
-        mail=SMTPMessage(); mail["Subject"]=message.subject; mail["From"]=formataddr((self.sender_name,self.sender)); mail["To"]=', '.join(message.recipients); mail.set_content(message.text_body); mail.add_alternative(message.html_body,subtype="html")
+        mail=SMTPMessage(); mail["Subject"]=message.subject; mail["From"]=formataddr((self.sender_name,self.sender)); mail["To"]=', '.join(message.recipients); mail["Date"]=format_datetime(datetime.now(UTC)); mail["Message-ID"]=make_msgid(domain=self.sender.partition("@")[2] or None); mail.set_content(message.text_body); mail.add_alternative(message.html_body,subtype="html")
         def deliver():
             with smtplib.SMTP(self.host,self.port,timeout=20) as client:
                 if self.tls: client.starttls()

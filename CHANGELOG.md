@@ -4,6 +4,17 @@ All notable changes are documented here. This project follows [Keep a Changelog]
 
 ## [Unreleased]
 
+### Added
+
+- Private, Git-ignored subscriber profiles with independent vertical selections.
+- Shared research execution with one separately reviewable newsletter per subscriber.
+- Personalized recipient persistence and CLI commands for subscriber listing and generation.
+
+### Changed
+
+- Email subjects now use `Vortenix Newsletter - Daily Research Brief - YYYY-MM-DD`.
+- SMTP messages include a friendly sender name, date, and unique message ID.
+
 ## [0.2.0] - 2026-07-18
 
 ### Added

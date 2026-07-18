@@ -28,6 +28,10 @@ Yes. Set `VORTENIX_EMAIL_PROVIDER=smtp` and the SMTP variables in your local, Gi
 
 Research output can be incomplete or misleading. Approval creates a deliberate human checkpoint and prevents generation from automatically authorising external communication.
 
+## Can subscribers receive different research verticals?
+
+Yes. Define each subscriber in the Git-ignored `config/subscribers.local.yaml` with their own `enabled_verticals`. Run `vortenix workflow run-personalized`; it creates a separate newsletter and recipient record for every subscriber. Each must be reviewed, approved, and sent independently.
+
 ## Is finance content financial advice?
 
 No. It is research information and the rendered newsletter includes that disclaimer.

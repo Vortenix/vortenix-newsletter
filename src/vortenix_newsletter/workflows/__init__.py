@@ -1,2 +1,3 @@
-from .newsletter_workflow import run_daily
-__all__=["run_daily"]
+from .newsletter_workflow import run_daily, run_personalized
+
+__all__ = ["run_daily", "run_personalized"]

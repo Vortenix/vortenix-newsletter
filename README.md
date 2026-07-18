@@ -25,6 +25,7 @@ Research newsletters combine unreliable networks, untrusted source text, topic-s
 - RSS ingestion with timeouts, bounded retries, content limits, cleaning, canonical URLs, and deduplication.
 - Four initial verticals: AI Infrastructure, Finance, Semiconductors, and Technology Radar.
 - YAML-driven generic verticals with validated ranking weights.
+- Private subscriber profiles with independent vertical selections and newsletters.
 - Offline deterministic analysis with extractive summaries, pain-point and company heuristics, citations, and reproducible scores.
 - HTML, plain-text, and JSON rendering with escaped source content.
 - SQLite/SQLAlchemy persistence separated from Pydantic domain models.
@@ -136,6 +137,7 @@ Source and vertical failures are isolated where possible, allowing a partial cit
 - `config/application.yaml` — database URL and confidence threshold.
 - `config/sources.yaml` — source names, feed locations, and article-fetch settings.
 - `config/audiences.yaml` — recipients, enabled verticals, and preference metadata.
+- `config/subscribers.local.yaml` — private subscriber addresses and vertical selections; ignored by Git.
 - `config/verticals/*.yaml` — keywords, research areas, weights, headings, and item limits.
 
 Run `vortenix config validate` after edits. The [configuration reference](docs/user-guide/configuration.md) documents every accepted field, default, validation rule, and currently unused metadata field.
@@ -171,8 +173,21 @@ vortenix newsletter show ID
 vortenix newsletter approve ID
 vortenix newsletter reject ID
 vortenix newsletter send ID [--force]
+vortenix subscribers list [--audience ID]
 vortenix workflow run-daily [--audience ID] [--demo]
+vortenix workflow run-personalized [--audience ID] [--subscriber ID] [--demo]
 ```
+
+### Personalized subscriber newsletters
+
+Copy `config/subscribers.example.yaml` to `config/subscribers.local.yaml` and give each subscriber an ID, private email address, and any subset of the audience's enabled verticals. The local file is ignored by Git. Then generate separate review drafts:
+
+```console
+vortenix subscribers list --audience anish_daily
+vortenix workflow run-personalized --audience anish_daily --demo
+```
+
+Sources are collected once and each required vertical is analysed once. Composition then creates one newsletter per subscriber containing only their selected sections. Every newsletter remains `READY_FOR_REVIEW` until independently approved and sent.
 
 See the [CLI reference](docs/reference/cli.md) for current semantics and limitations.
 

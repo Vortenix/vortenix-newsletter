@@ -1,0 +1,29 @@
+# Copy this file to config/subscribers.local.yaml. The local file is ignored by Git.
+subscribers:
+  - id: finance_reader
+    name: Finance Reader
+    email: finance-reader@example.com
+    audience_id: anish_daily
+    enabled: true
+    frequency: daily
+    depth: detailed
+    enabled_verticals:
+      - finance
+    topic_priorities:
+      finance: high
+
+  - id: technology_reader
+    name: Technology Reader
+    email: technology-reader@example.com
+    audience_id: anish_daily
+    enabled: true
+    frequency: daily
+    depth: concise
+    enabled_verticals:
+      - ai_infrastructure
+      - semiconductors
+      - technology_radar
+    topic_priorities:
+      ai_infrastructure: high
+      semiconductors: medium
+      technology_radar: high
