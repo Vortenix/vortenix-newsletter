@@ -3,6 +3,6 @@ name: AI Infrastructure
 enabled: true
 implementation: generic
 research_areas: [accelerators, networking, memory, storage, power, cooling, inference, cloud infrastructure]
-keywords: [AI accelerator, inference, GPU, HBM, data centre, liquid cooling]
+keywords: [AI accelerator, artificial intelligence, inference, GPU, HBM, data center, data centre, liquid cooling, machine learning, model serving, cloud infrastructure, networking, power consumption]
 ranking_weights: {relevance: 0.30, novelty: 0.20, significance: 0.20, evidence: 0.15, recency: 0.15}
 newsletter: {enabled: true, section_title: AI Infrastructure, maximum_items: 5}

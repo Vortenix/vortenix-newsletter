@@ -33,6 +33,11 @@ jobs:
       VORTENIX_LLM_MAX_DOCUMENTS: "20"
       VORTENIX_LLM_MAX_DOCUMENT_CHARS: "6000"
       VORTENIX_SUBSCRIBERS_B64: ${{ secrets.VORTENIX_SUBSCRIBERS_B64 }}
+      REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+      REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+      REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+      FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+      CROSSREF_MAILTO: ${{ secrets.CROSSREF_MAILTO }}
 
     steps:
       - name: Check out repository

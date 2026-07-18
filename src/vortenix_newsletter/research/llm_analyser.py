@@ -72,7 +72,9 @@ class LLMResearchAnalyser:
         matches = [
             document
             for document in documents
-            if any(
+            if document.metadata.get("llm_allowed", True)
+            and (not document.metadata.get("verticals") or vertical.id in document.metadata["verticals"])
+            and any(
                 keyword in f"{document.title} {document.content}".casefold() for keyword in keywords
             )
         ]

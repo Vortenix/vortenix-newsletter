@@ -1,5 +1,292 @@
 sources:
+  - name: NVIDIA Technical Blog
+    url: https://blogs.nvidia.com/feed/
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [ai_infrastructure, semiconductors]
+
+  - name: AWS Machine Learning Blog
+    url: https://aws.amazon.com/blogs/machine-learning/feed/
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [ai_infrastructure, technology_radar]
+
+  - name: Google AI Blog
+    url: https://blog.google/technology/ai/rss/
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [ai_infrastructure, technology_radar]
+
+  - name: US Federal Reserve Press Releases
+    url: https://www.federalreserve.gov/feeds/press_all.xml
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [finance]
+
+  - name: European Central Bank Press Releases
+    url: https://www.ecb.europa.eu/rss/press.html
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [finance]
+
+  - name: US SEC Press Releases
+    url: https://www.sec.gov/news/pressreleases.rss
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [finance, semiconductors, technology_radar]
+
+  - name: FINRA News Releases
+    url: https://www.finra.org/media-center/newsreleases/rss
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [finance]
+
+  - name: CFTC Press Releases
+    url: https://www.cftc.gov/RSS/RSSGP/rssgp.xml
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [finance]
+
+  - name: Intel Newsroom
+    url: https://newsroom.intel.com/feed
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [ai_infrastructure, semiconductors]
+
+  - name: GitHub Blog
+    url: https://github.blog/feed/
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [technology_radar]
+
+  - name: Cloudflare Blog
+    url: https://blog.cloudflare.com/rss/
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [ai_infrastructure, technology_radar]
+
+  - name: arXiv AI and Machine Learning
+    url: "https://export.arxiv.org/api/query?search_query=cat:cs.AI+OR+cat:cs.LG&sortBy=submittedDate&sortOrder=descending&max_results=30"
+    type: rss
+    trust_level: scholarly
+    enabled: true
+    verticals: [ai_infrastructure, technology_radar]
+
+  - name: arXiv Distributed Systems
+    url: "https://export.arxiv.org/api/query?search_query=cat:cs.DC&sortBy=submittedDate&sortOrder=descending&max_results=30"
+    type: rss
+    trust_level: scholarly
+    enabled: true
+    verticals: [ai_infrastructure, technology_radar]
+
+  - name: arXiv Hardware Architecture
+    url: "https://export.arxiv.org/api/query?search_query=cat:cs.AR&sortBy=submittedDate&sortOrder=descending&max_results=30"
+    type: rss
+    trust_level: scholarly
+    enabled: true
+    verticals: [semiconductors, ai_infrastructure]
+
+  - name: Crossref Emerging Technology Research
+    url: artificial intelligence semiconductor financial technology cloud infrastructure
+    type: crossref
+    trust_level: scholarly
+    enabled: true
+    verticals: [ai_infrastructure, finance, semiconductors, technology_radar]
+
+  - name: Crossref Semiconductor Research
+    url: semiconductor chip foundry wafer fabrication transistor packaging
+    type: crossref
+    trust_level: scholarly
+    enabled: true
+    verticals: [semiconductors]
+
+  - name: Hacker News Technology Signals
+    url: topstories
+    type: hacker_news
+    trust_level: community
+    llm_allowed: false
+    enabled: true
+    verticals: [ai_infrastructure, technology_radar]
+
+  - name: GDELT Global Business and Technology Discovery
+    url: '("artificial intelligence" OR semiconductor OR banking OR fintech OR cloud OR cybersecurity OR "open source")'
+    type: gdelt
+    trust_level: industry
+    enabled: true
+    verticals: [ai_infrastructure, finance, semiconductors, technology_radar]
+
+  - name: Kubernetes Project Updates
+    url: https://kubernetes.io/feed.xml
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [ai_infrastructure, technology_radar]
+
+  - name: Kubernetes Releases
+    url: https://github.com/kubernetes/kubernetes/releases.atom
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [ai_infrastructure, technology_radar]
+
+  - name: PyTorch Releases
+    url: https://github.com/pytorch/pytorch/releases.atom
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [ai_infrastructure, technology_radar]
+
+  - name: vLLM Releases
+    url: https://github.com/vllm-project/vllm/releases.atom
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [ai_infrastructure, technology_radar]
+
+  - name: Hugging Face Transformers Releases
+    url: https://github.com/huggingface/transformers/releases.atom
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [ai_infrastructure, technology_radar]
+
+  - name: Microsoft Security Blog
+    url: https://www.microsoft.com/en-us/security/blog/feed/
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [technology_radar]
+
+  - name: Y Combinator Blog
+    url: https://www.ycombinator.com/blog/rss
+    type: rss
+    trust_level: industry
+    enabled: true
+    verticals: [finance, technology_radar]
+
+  - name: Product Hunt Launch Signals
+    url: https://www.producthunt.com/feed
+    type: rss
+    trust_level: community
+    llm_allowed: false
+    enabled: true
+    verticals: [technology_radar]
+
+  - name: Google Project Zero
+    url: https://googleprojectzero.blogspot.com/feeds/posts/default
+    type: rss
+    trust_level: authoritative
+    enabled: true
+    verticals: [technology_radar]
+
+  - name: FRED Economic Indicators
+    url: CPIAUCSL,FEDFUNDS,UNRATE,GDP,DGS10
+    type: fred
+    trust_level: authoritative
+    enabled: false
+    verticals: [finance]
+
+  # These data/news services need a dedicated key, licence, or connector before activation.
+  - name: World Bank Economic Data
+    url: https://api.worldbank.org/
+    type: rss
+    trust_level: authoritative
+    enabled: false
+    verticals: [finance]
+
+  - name: IMF Economic Data
+    url: https://www.imf.org/en/Data
+    type: rss
+    trust_level: authoritative
+    enabled: false
+    verticals: [finance]
+
+  - name: OECD Economic Data
+    url: https://data-explorer.oecd.org/
+    type: rss
+    trust_level: authoritative
+    enabled: false
+    verticals: [finance]
+
+  - name: Eurostat Economic Data
+    url: https://ec.europa.eu/eurostat/
+    type: rss
+    trust_level: authoritative
+    enabled: false
+    verticals: [finance]
+
+  - name: News Search API
+    url: https://www.microsoft.com/en-us/bing/apis/bing-news-search-api
+    type: rss
+    trust_level: discovery
+    enabled: false
+
+  - name: Semantic Scholar API
+    url: https://api.semanticscholar.org/
+    type: rss
+    trust_level: scholarly
+    enabled: false
+    verticals: [ai_infrastructure, finance, semiconductors, technology_radar]
+
+  - name: OpenAlex API
+    url: https://api.openalex.org/
+    type: rss
+    trust_level: scholarly
+    enabled: false
+    verticals: [ai_infrastructure, finance, semiconductors, technology_radar]
+
+  - name: Reddit Community Signals
+    url: MachineLearning+LocalLLaMA+hardware+semiconductors+investing+finance+technology
+    type: reddit
+    trust_level: community
+    llm_allowed: false
+    enabled: false
+
+  # Licensed publications must only be enabled with a valid content licence and connector.
+  - name: Reuters Licensed Reporting
+    url: https://www.reuters.com/
+    type: rss
+    trust_level: licensed
+    enabled: false
+
+  - name: Bloomberg Licensed Reporting
+    url: https://www.bloomberg.com/
+    type: rss
+    trust_level: licensed
+    enabled: false
+
+  - name: Financial Times Licensed Reporting
+    url: https://www.ft.com/
+    type: rss
+    trust_level: licensed
+    enabled: false
+
+  - name: Wall Street Journal Licensed Reporting
+    url: https://www.wsj.com/
+    type: rss
+    trust_level: licensed
+    enabled: false
+
+  - name: The Information Licensed Reporting
+    url: https://www.theinformation.com/
+    type: rss
+    trust_level: licensed
+    enabled: false
+
   - name: Vortenix Demo Research
     url: tests/fixtures/sample.rss
-    enabled: true
-    retrieve_articles: false
+    type: rss
+    trust_level: fixture
+    llm_allowed: false
+    enabled: false

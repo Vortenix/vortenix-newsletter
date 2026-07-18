@@ -16,7 +16,27 @@ class ConfigBundle:
             for item in subscriber_data.get("subscribers", [])
         ]
         self.verticals=[VerticalConfig.model_validate(_load(p)) for p in sorted((root/"verticals").glob("*.yaml"))]
+        self._validate_sources()
         self._validate_subscribers()
+
+    def _validate_sources(self) -> None:
+        supported = {"rss", "reddit", "hacker_news", "crossref", "fred", "gdelt"}
+        vertical_ids = {vertical.id for vertical in self.verticals if vertical.enabled}
+        seen: set[str] = set()
+        for source in self.sources:
+            if source.name in seen:
+                raise ConfigurationError(f"Duplicate source name: {source.name}")
+            seen.add(source.name)
+            if source.type not in supported:
+                raise ConfigurationError(f"Unsupported source type: {source.type}")
+            unknown = set(source.verticals) - vertical_ids
+            if unknown:
+                names = ", ".join(sorted(unknown))
+                raise ConfigurationError(f"Source {source.name} references unknown verticals: {names}")
+            if source.trust_level == "community" and source.llm_allowed:
+                raise ConfigurationError(
+                    f"Community source {source.name} must set llm_allowed: false"
+                )
 
     def _validate_subscribers(self) -> None:
         audience_ids = {audience.id for audience in self.audiences}

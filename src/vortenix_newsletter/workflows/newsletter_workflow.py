@@ -17,6 +17,7 @@ from vortenix_newsletter.domain.models import (
 )
 from vortenix_newsletter.ingestion.deduplicator import deduplicate
 from vortenix_newsletter.ingestion.rss_connector import RSSConnector
+from vortenix_newsletter.ingestion.registry import ConnectorRegistry
 from vortenix_newsletter.newsletter.service import NewsletterService
 from vortenix_newsletter.newsletter.composer import compose
 from vortenix_newsletter.newsletter.renderer import Renderer
@@ -42,17 +43,21 @@ async def collect_documents(
 ) -> list[SourceDocument]:
     """Collect enabled sources once and persist the deduplicated documents."""
     documents: list[SourceDocument] = []
-    connector = RSSConnector()
+    registry = ConnectorRegistry()
     for source in config.sources:  # type: ignore[attr-defined]
         if not source.enabled:
             continue
         try:
+            connector = RSSConnector() if demo else registry.get(source.type)
             url = "tests/fixtures/sample.rss" if demo else source.url
             request = SourceRequest(
                 source_name=source.name,
                 url=url,
-                lookback_hours=24 * 3650 if demo else 24,
+                lookback_hours=24 * 3650 if demo else source.lookback_hours,
                 retrieve_articles=False if demo else source.retrieve_articles,
+                trust_level=source.trust_level,
+                llm_allowed=source.llm_allowed,
+                verticals=[] if demo else source.verticals,
             )
             documents.extend(await connector.fetch(request))
         except Exception as exc:

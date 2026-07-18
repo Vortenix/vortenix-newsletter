@@ -175,6 +175,9 @@ class SourceRequest(BaseModel):
     url: str
     lookback_hours: int = 24
     retrieve_articles: bool = False
+    trust_level: str = "industry"
+    llm_allowed: bool = True
+    verticals: list[str] = Field(default_factory=list)
 
 
 class ResearchContext(BaseModel):
