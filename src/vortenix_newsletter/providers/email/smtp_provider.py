@@ -7,7 +7,10 @@ class SMTPEmailProvider:
 
     def __init__(self):
         self.host=os.getenv("SMTP_HOST",""); self.port=int(os.getenv("SMTP_PORT","587")); self.username=os.getenv("SMTP_USERNAME",""); self.password=os.getenv("SMTP_PASSWORD",""); self.sender=os.getenv("SMTP_FROM_EMAIL",""); self.tls=os.getenv("SMTP_USE_TLS","true").lower()=="true"
-        if not self.host or not self.sender: raise ConfigurationError("SMTP_HOST and SMTP_FROM_EMAIL are required")
+        if not self.host or not self.sender:
+            raise ConfigurationError("SMTP_HOST and SMTP_FROM_EMAIL are required")
+        if self.username and not self.password:
+            raise ConfigurationError("SMTP_PASSWORD is required when SMTP_USERNAME is set")
     async def send(self,message: EmailMessage)->DeliveryResult:
         mail=SMTPMessage(); mail["Subject"]=message.subject; mail["From"]=self.sender; mail["To"]=', '.join(message.recipients); mail.set_content(message.text_body); mail.add_alternative(message.html_body,subtype="html")
         def deliver():

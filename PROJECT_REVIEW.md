@@ -6,7 +6,7 @@ Reviewed: 18 July 2026
 
 Vortenix Newsletter has a coherent first-version architecture and a working offline demonstration, but its repository presentation is not yet ready for a public open-source launch. The package has useful domain/provider boundaries, configuration examples, an approval gate, and passing smoke tests. The largest gaps are community standards, architectural and user documentation, CI, packaging metadata, realistic quality gates, API documentation, and examples.
 
-This review intentionally describes the repository as implemented. In particular, the CLI currently selects console delivery directly; the SMTP adapter is present but is not selected through configuration. The OpenAI adapter is present but is not integrated into the daily workflow. These are documented as limitations, not advertised as completed features.
+This review captured the repository before the follow-up SMTP wiring change. The CLI now selects console or SMTP delivery through local environment configuration; the OpenAI adapter remains unintegrated. Historical findings below are retained as the review record.
 
 ## Current strengths
 

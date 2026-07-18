@@ -22,7 +22,7 @@ No action is needed: current research uses deterministic analysis. No OpenAI key
 
 ## Can SMTP send to my real address?
 
-An SMTP adapter exists, but the current CLI always constructs the console provider. Changing `.env` alone does not activate SMTP. This limitation prevents accidental delivery and is tracked on the roadmap.
+Yes. Set `VORTENIX_EMAIL_PROVIDER=smtp` and the SMTP variables in your local, Git-ignored `.env`. A newsletter must still be explicitly approved before sending.
 
 ## Why is explicit approval required?
 

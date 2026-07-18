@@ -1,5 +1,6 @@
 import asyncio,logging
 import typer
+from dotenv import load_dotenv
 from vortenix_newsletter.config.loader import load_config
 from vortenix_newsletter.domain.models import SourceRequest
 from vortenix_newsletter.ingestion.rss_connector import RSSConnector
@@ -7,8 +8,10 @@ from vortenix_newsletter.newsletter.service import NewsletterService
 from vortenix_newsletter.persistence.database import init_db,session_factory
 from vortenix_newsletter.persistence.repositories import NewsletterRepository,SourceRepository
 from vortenix_newsletter.providers.email.console_provider import ConsoleEmailProvider
+from vortenix_newsletter.providers.email.factory import configured_recipients, create_email_provider
 from vortenix_newsletter.workflows.newsletter_workflow import run_daily
 logging.basicConfig(level=logging.INFO,format='%(asctime)s %(levelname)s %(name)s %(message)s')
+load_dotenv()
 app=typer.Typer(help="Vortenix Newsletter"); config_app=typer.Typer(); db_app=typer.Typer(); sources_app=typer.Typer(); research_app=typer.Typer(); newsletter_app=typer.Typer(); workflow_app=typer.Typer()
 app.add_typer(config_app,name="config"); app.add_typer(db_app,name="db"); app.add_typer(sources_app,name="sources"); app.add_typer(research_app,name="research"); app.add_typer(newsletter_app,name="newsletter"); app.add_typer(workflow_app,name="workflow")
 def context():
@@ -45,8 +48,8 @@ def approve(ident: str): _,s=context(); n=NewsletterService(NewsletterRepository
 def reject(ident: str): _,s=context(); n=NewsletterService(NewsletterRepository(s),ConsoleEmailProvider()).reject(ident); typer.echo(f"{n.id}: {n.status}")
 @newsletter_app.command("send")
 def send(ident: str,force: bool=False):
-    cfg,s=context(); n=NewsletterRepository(s).get(ident); recipients=cfg.audience(n.audience_id).recipients
-    result=asyncio.run(NewsletterService(NewsletterRepository(s),ConsoleEmailProvider()).send(ident,recipients,force)); typer.echo(f"Delivery success: {result.success}")
+    cfg,s=context(); n=NewsletterRepository(s).get(ident); recipients=configured_recipients(cfg.audience(n.audience_id).recipients)
+    result=asyncio.run(NewsletterService(NewsletterRepository(s),create_email_provider()).send(ident,recipients,force)); typer.echo(f"Delivery success: {result.success}")
 @workflow_app.command("run-daily")
 def daily(audience: str=typer.Option("anish_daily"),demo: bool=False):
     cfg,s=context(); n=asyncio.run(run_daily(cfg,cfg.audience(audience),s,demo=demo)); typer.echo(f"Newsletter ID: {n.id}\nHTML: {n.html_path}\nText: {n.text_path}\nJSON: {n.json_path}\nStatus: {n.status}")

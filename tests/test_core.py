@@ -10,6 +10,8 @@ from vortenix_newsletter.ingestion.deduplicator import deduplicate
 from vortenix_newsletter.ingestion.rss_connector import RSSConnector
 from vortenix_newsletter.domain.models import SourceRequest
 from vortenix_newsletter.verticals.registry import VerticalRegistry
+from vortenix_newsletter.providers.email.console_provider import ConsoleEmailProvider
+from vortenix_newsletter.providers.email.factory import configured_recipients, create_email_provider
 
 def test_config_and_registry():
     cfg=load_config(); assert len(cfg.verticals)==4; assert set(VerticalRegistry(cfg.verticals).ids())==set(x.id for x in cfg.verticals)
@@ -24,3 +26,9 @@ def test_status_transition():
 async def test_fixture_ingestion_and_deduplication():
     docs=await RSSConnector().fetch(SourceRequest(source_name="fixture",url="tests/fixtures/sample.rss",lookback_hours=99999))
     assert len(docs)==3; assert len(deduplicate(docs+docs))==3
+
+def test_private_email_environment(monkeypatch):
+    monkeypatch.setenv("VORTENIX_EMAIL_PROVIDER", "console")
+    monkeypatch.setenv("VORTENIX_RECIPIENTS", "first@example.com, second@example.com")
+    assert isinstance(create_email_provider(), ConsoleEmailProvider)
+    assert configured_recipients(["fallback@example.com"]) == ["first@example.com", "second@example.com"]

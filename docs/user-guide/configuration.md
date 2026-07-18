@@ -1,6 +1,6 @@
 # Configuration reference
 
-Configuration is loaded from `config/` with PyYAML and validated by Pydantic. Paths are resolved relative to the working directory, so run commands from the repository root. Environment variables shown in `.env.example` are documentation for adapters; the application does not currently load `.env` automatically or select providers from those variables.
+Configuration is loaded from `config/` with PyYAML and validated by Pydantic. Paths are resolved relative to the working directory, so run commands from the repository root. The CLI loads a local, Git-ignored `.env` file for private delivery configuration.
 
 ## `application.yaml`
 
@@ -56,4 +56,4 @@ Ranking weights must total within `0.01` of `1.0`. Run `vortenix config validate
 
 ## Provider environment variables
 
-`SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_EMAIL`, and `SMTP_USE_TLS` are consumed only when `SMTPEmailProvider` is explicitly constructed. `OPENAI_MODEL` and the standard `OPENAI_API_KEY` are consumed only when `OpenAIProvider` is constructed. Provider selection is not wired into the current CLI.
+`VORTENIX_EMAIL_PROVIDER` selects `console` (the safe default) or `smtp`. `VORTENIX_RECIPIENTS` is a comma-separated private recipient override, keeping real addresses out of tracked audience YAML. `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_EMAIL`, and `SMTP_USE_TLS` configure SMTP. `OPENAI_MODEL` and the standard `OPENAI_API_KEY` are consumed only when `OpenAIProvider` is constructed; LLM provider selection is not yet wired into the workflow.

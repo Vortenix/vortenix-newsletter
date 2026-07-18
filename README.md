@@ -14,7 +14,7 @@
 Vortenix Newsletter collects source material, analyses it through independent research verticals, composes cited briefings, and stops for human review before delivery. It is designed for researchers and developers who want a transparent, locally runnable foundation rather than an opaque newsletter generator.
 
 > [!IMPORTANT]
-> This project is alpha software. The offline demo is complete, but the current CLI uses console delivery only. SMTP and OpenAI adapters exist as extension points and are not yet selected by the daily workflow.
+> This project is alpha software. Console delivery remains the safe default; SMTP can be enabled locally through an ignored `.env` after explicit approval. OpenAI analysis is not yet selected by the daily workflow.
 
 ## Why Vortenix?
 
@@ -29,7 +29,7 @@ Research newsletters combine unreliable networks, untrusted source text, topic-s
 - HTML, plain-text, and JSON rendering with escaped source content.
 - SQLite/SQLAlchemy persistence separated from Pydantic domain models.
 - Explicit `READY_FOR_REVIEW → APPROVED → SENT` workflow.
-- Console delivery for safe local development; optional SMTP and OpenAI adapter code.
+- Console delivery for safe local development and opt-in SMTP configured through local secrets.
 - Typer CLI, typed extension protocols, fixtures, tests, and CI.
 
 ## Architecture at a glance
@@ -113,7 +113,7 @@ vortenix newsletter approve <newsletter-id>
 vortenix newsletter send <newsletter-id>
 ```
 
-`send` uses `ConsoleEmailProvider`: it prints preview metadata and transmits nothing. Rejected or unapproved newsletters cannot be sent.
+By default, `send` uses `ConsoleEmailProvider`: it prints preview metadata and transmits nothing. Setting `VORTENIX_EMAIL_PROVIDER=smtp` in the local `.env` opts into real SMTP delivery. Rejected or unapproved newsletters cannot be sent.
 
 ## Workflow
 
@@ -210,7 +210,7 @@ The equivalent commands work directly on Windows where `make` is unavailable. St
 
 ## Roadmap
 
-Near-term work focuses on hardening ingestion, tests, migrations, type/lint strictness, and deliberate SMTP/LLM provider wiring. Later phases cover additional connectors, improved analysis, a review dashboard, publishing channels, knowledge modelling, and evidence-driven service extraction. See [ROADMAP.md](ROADMAP.md).
+Near-term work focuses on hardening ingestion, tests, migrations, type/lint strictness, SMTP delivery auditing, and deliberate LLM provider wiring. Later phases cover additional connectors, improved analysis, a review dashboard, publishing channels, knowledge modelling, and evidence-driven service extraction. See [ROADMAP.md](ROADMAP.md).
 
 ## Contributing
 

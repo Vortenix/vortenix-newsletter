@@ -102,7 +102,7 @@ flowchart LR
   OpenAI[OpenAI adapter] -. implements .-> LP[LLMProvider]
 ```
 
-Today the vertical registry constructs generic implementations from YAML. Specialized classes exist as evolution points but need explicit registry wiring before use. Likewise, SMTP and OpenAI adapters exist but the CLI/daily workflow currently uses console delivery and deterministic vertical analysis.
+Today the vertical registry constructs generic implementations from YAML. Specialized classes exist as evolution points but need explicit registry wiring before use. The CLI selects console or SMTP delivery from local environment configuration; research remains deterministic because OpenAI selection is not yet integrated.
 
 ## Future extraction
 
