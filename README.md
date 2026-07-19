@@ -209,7 +209,7 @@ Sources are collected once. Required verticals are analysed once per active rese
 
 See the [CLI reference](docs/reference/cli.md) for current semantics and limitations.
 
-For explicitly opted-in, no-review delivery to all subscribers at 8:00 AM, see the [scheduling guide](docs/user-guide/scheduling.md). It covers Windows Task Scheduler and GitHub Actions. Local secrets remain in the Git-ignored `.env`; cloud credentials and the private subscriber list belong in encrypted Actions secrets.
+For explicitly opted-in, no-review delivery to all subscribers by approximately 8:00 AM, see the [scheduling guide](docs/user-guide/scheduling.md). GitHub Actions starts at 7:45 AM to avoid top-of-hour scheduler congestion; Windows Task Scheduler can run at 8:00 AM directly. Local secrets remain in the Git-ignored `.env`; cloud credentials and the private subscriber list belong in encrypted Actions secrets.
 
 ## Project layout
 
