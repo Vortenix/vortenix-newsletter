@@ -29,7 +29,7 @@ Test the task using Task Scheduler's **Run** action. This performs real delivery
 
 ## GitHub Actions (recommended for cloud scheduling)
 
-The workflow `.github/workflows/daily-newsletter.yml` runs every day at 8:00 AM in the `Europe/Dublin` timezone and can also be started manually. Scheduled workflows run from the repository's default branch, so merge the workflow before expecting the schedule to start.
+The workflow `.github/workflows/daily-newsletter.yml` is triggered every day at 7:45 AM in the `Europe/Dublin` timezone, targeting delivery by 8:00 AM. The offset avoids GitHub's high-load start-of-hour window and leaves a buffer for the approximately two-minute workflow. GitHub schedules are best-effort and cannot guarantee an exact delivery time. The workflow can also be started manually. Scheduled workflows run from the repository's default branch, so merge the workflow before expecting the schedule to start.
 
 Create these repository secrets under **Settings → Secrets and variables → Actions**:
 
