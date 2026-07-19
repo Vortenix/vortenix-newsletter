@@ -44,7 +44,7 @@ Reddit is configured as a disabled community-signal source. Enable it only after
 | `depth` | string | `detailed` | Depth metadata; not yet used by composition |
 | `enabled` | boolean | `true` | Whether lookup can select the audience |
 
-The checked-in address is deliberately a placeholder. Console delivery is the only provider selected by the current CLI.
+The checked-in address is deliberately a placeholder. The CLI selects the safe console provider by default or SMTP through private environment configuration. Scheduled delivery requires SMTP explicitly.
 
 ## `verticals/*.yaml`
 

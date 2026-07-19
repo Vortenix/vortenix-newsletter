@@ -13,4 +13,4 @@ Use keyword matching, extractive summaries, heuristics, component scoring, and c
 
 ## Consequences
 
-The demo is reproducible and tests have a stable oracle. Heuristic entity and pain-point quality is limited. Optional LLM output must still pass domain validation and must never replace explicit ranking or approval controls.
+The demo is reproducible and tests have a stable oracle. Heuristic entity and pain-point quality is limited. Optional LLM output must still pass domain validation and never replaces application-owned ranking or status transitions. Personalized free subscribers use this deterministic path directly; premium subscribers fall back to it per vertical when LLM analysis fails.

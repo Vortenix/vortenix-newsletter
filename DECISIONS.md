@@ -24,4 +24,4 @@ Domain models remain independent from SQLAlchemy records. Repositories centralis
 
 ## Explicit approval
 
-Generation never implies permission to communicate externally. A newsletter must transition from `READY_FOR_REVIEW` to `APPROVED` before delivery. Rejected newsletters cannot be sent. This is a safety and editorial-control invariant, not merely a UI convention.
+Interactive generation never implies permission to communicate externally. A newsletter must transition from `READY_FOR_REVIEW` to `APPROVED` before delivery, and rejected newsletters cannot be sent. Unattended delivery is a separate operational decision: it is disabled by default, requires a private environment opt-in plus SMTP, and performs the same status transition explicitly in the scheduled workflow.

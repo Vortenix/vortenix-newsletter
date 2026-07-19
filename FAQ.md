@@ -22,19 +22,23 @@ Set `VORTENIX_RESEARCH_MODE=deterministic`, or omit it. No OpenAI key is require
 
 ## Can SMTP send to my real address?
 
-Yes. Set `VORTENIX_EMAIL_PROVIDER=smtp` and the SMTP variables in your local, Git-ignored `.env`. A newsletter must still be explicitly approved before sending.
+Yes. Set `VORTENIX_EMAIL_PROVIDER=smtp` and the SMTP variables in your local, Git-ignored `.env`. Interactive newsletters must be explicitly approved. The separately guarded scheduled workflow can approve and send automatically.
 
 ## Why is explicit approval required?
 
-Research output can be incomplete or misleading. Approval creates a deliberate human checkpoint and prevents generation from automatically authorising external communication.
+Research output can be incomplete or misleading. Interactive workflows retain a deliberate human checkpoint. Unattended delivery is a separate explicit operational choice guarded by `VORTENIX_ALLOW_AUTOMATIC_SEND=true`, SMTP configuration, private subscriber data, and per-subscriber failure isolation.
 
 ## Can subscribers receive different research verticals?
 
-Yes. Define each subscriber in the Git-ignored `config/subscribers.local.yaml` with their own `enabled_verticals`. Run `vortenix workflow run-personalized`; it creates a separate newsletter and recipient record for every subscriber. Each must be reviewed, approved, and sent independently.
+Yes. Define each subscriber in the Git-ignored `config/subscribers.local.yaml` with their own `enabled_verticals`. `run-personalized` creates review-ready drafts. `run-scheduled` creates, automatically approves, and sends a separate newsletter to every enabled subscriber.
 
 ## Can free and premium subscribers use different research modes?
 
-Yes. Set `research_mode: deterministic` for free subscribers and `research_mode: llm` for premium subscribers. A single personalized run builds separate shared result sets for the active tiers. Premium analysis still falls back safely when API access fails.
+Yes. Set `research_mode: deterministic` for free subscribers and `research_mode: llm` for premium subscribers. A single personalized run builds separate shared result sets for active tiers. Premium analysis falls back independently for each failed vertical and records the requested mode, actual mode, and warnings; free subscribers never invoke the LLM.
+
+## Does LLM mode search the internet directly?
+
+No. Source connectors collect and normalize authorized RSS/Atom feeds and structured APIs first. The LLM receives only bounded, keyword-matched documents with `llm_allowed: true`; community sources configured as non-LLM evidence are excluded.
 
 ## Is finance content financial advice?
 
