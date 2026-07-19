@@ -11,7 +11,7 @@
 
 ## Architecture plan
 
-Build a modular monolith around domain-only Pydantic models and provider/repository protocols. Configuration and persistence sit at the edges. Ingestion produces `SourceDocument` values; registered verticals produce `VerticalResearchResult` values; validation/ranking precede composition; rendering creates review artifacts; an explicit status transition gates delivery.
+Build a modular monolith around domain-only Pydantic models and provider/repository protocols. Configuration and persistence sit at the edges. Ingestion produces `SourceDocument` values; registered verticals produce `VerticalResearchResult` values; validation/ranking precede composition; rendering creates review artifacts. Interactive delivery uses explicit approval; the later scheduled workflow adds a separately guarded automatic transition.
 
 ## Checklist
 
@@ -27,6 +27,9 @@ Build a modular monolith around domain-only Pydantic models and provider/reposit
 - [x] Stage 5 validation: approval gate and console provider exercised
 - [x] Stage 6: fixtures, tests, README, Makefile, final validation
 - [x] Acceptance commands and offline demo verified
+- [x] Personalized free deterministic and premium LLM tiers with per-vertical fallback
+- [x] Guarded unattended subscriber delivery and GitHub Actions scheduling
+- [x] Expanded RSS/Atom and structured API source coverage with provenance controls
 
 ## Progress notes
 

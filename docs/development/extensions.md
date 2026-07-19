@@ -14,4 +14,4 @@ Implement `SourceConnector.fetch(SourceRequest)`. Return normalised domain docum
 
 ## Providers
 
-Email providers accept an `EmailMessage` and return `DeliveryResult`. LLM providers return the supplied Pydantic response model from `generate_structured`. Provider adapters must not weaken approval, citation, or structured-validation invariants.
+Email providers accept an `EmailMessage` and return `DeliveryResult`. LLM providers return the supplied Pydantic response model from `generate_structured`. Provider adapters must not weaken status-transition, citation, or structured-validation invariants; automatic approval belongs only to the explicitly guarded scheduled workflow.

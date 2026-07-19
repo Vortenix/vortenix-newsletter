@@ -1,6 +1,6 @@
 # LLM research mode
 
-LLM mode is an optional analysis layer over configured source documents. It does not search the web and does not replace RSS ingestion, validation, ranking, review, or approval.
+LLM mode is an optional analysis layer over documents collected by configured RSS/Atom and structured API connectors. It does not search the web directly and does not replace ingestion, validation, ranking, or citation controls. Interactive workflows retain review and approval; the separately guarded scheduled workflow may approve and deliver automatically.
 
 For personalized newsletters, mode is selected per subscriber: `research_mode: deterministic` is the free tier and `research_mode: llm` is the premium tier. The global `VORTENIX_RESEARCH_MODE` continues to control non-personalized audience-level runs.
 
@@ -38,7 +38,7 @@ The model returns a provider-neutral Pydantic draft. Application code then:
 
 The OpenAI request uses structured output parsing and `store=False`. Source content is still transmitted to the configured API provider; only enable LLM mode for material you are authorized to process.
 
-Every newsletter records both `research_mode` (the subscriber's requested tier) and `analysis_mode` (what actually produced the findings). When one or more premium verticals fall back, `analysis_mode` becomes `deterministic` or `mixed` and `analysis_warnings` identifies the affected verticals. Review these fields before approving premium delivery.
+Every newsletter records both `research_mode` (the subscriber's requested tier) and `analysis_mode` (what actually produced the findings). When one or more premium verticals fall back, `analysis_mode` becomes `deterministic` or `mixed` and `analysis_warnings` identifies the affected verticals. Interactive operators can inspect these fields before approval; unattended runs retain them in generated artifacts and logs.
 
 ## Operation
 
@@ -46,6 +46,7 @@ Use the normal workflows:
 
 ```console
 vortenix workflow run-personalized --audience anish_daily
+vortenix workflow run-scheduled --audience anish_daily
 ```
 
 Logs identify fallback events but never include the API key, full source bodies, or prompts. To disable external AI calls immediately, set:

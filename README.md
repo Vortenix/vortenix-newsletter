@@ -11,26 +11,26 @@
 
 </div>
 
-Vortenix Newsletter collects source material, analyses it through independent research verticals, composes cited briefings, and stops for human review before delivery. It is designed for researchers and developers who want a transparent, locally runnable foundation rather than an opaque newsletter generator.
+Vortenix Newsletter collects diverse source material, builds personalized cited briefings across independent research verticals, and delivers them through either a review-first workflow or an explicitly enabled unattended schedule. Free subscribers receive deterministic research; premium subscribers receive evidence-constrained LLM analysis with transparent per-vertical deterministic fallback.
 
 > [!IMPORTANT]
-> This project is alpha software. Console delivery remains the safe default; SMTP and structured OpenAI analysis are explicit local opt-ins. Newsletter delivery always retains the approval gate.
+> This project is alpha software. Console delivery remains the safe default. SMTP, structured OpenAI analysis, and unattended delivery are separate explicit opt-ins. The scheduled command requires `VORTENIX_ALLOW_AUTOMATIC_SEND=true`; interactive generation retains the approval gate.
 
 ## Why Vortenix?
 
-Research newsletters combine unreliable networks, untrusted source text, topic-specific judgement, editorial review, and external delivery. Vortenix separates those concerns behind typed contracts while keeping the application simple enough for one developer to run and understand. Every selected finding retains its source citation and explainable component scores; generation never authorises sending.
+Research newsletters combine unreliable networks, untrusted source text, topic-specific judgement, subscriber preferences, AI-provider failures, editorial review, and external delivery. Vortenix separates those concerns behind typed contracts. Every selected finding retains its source citation and application-owned scores; premium AI failure changes the analysis path, not whether a subscriber receives an edition.
 
 ## Features
 
-- RSS ingestion with timeouts, bounded retries, content limits, cleaning, canonical URLs, and deduplication.
+- RSS/Atom, Hacker News, Crossref, GDELT, FRED, and credentialed Reddit connectors with bounded I/O, provenance, vertical scoping, and deduplication.
 - Four initial verticals: AI Infrastructure, Finance, Semiconductors, and Technology Radar.
 - YAML-driven generic verticals with validated ranking weights.
 - Private subscriber profiles with independent vertical selections and newsletters.
 - Offline deterministic analysis with extractive summaries, pain-point and company heuristics, citations, and reproducible scores.
-- Optional evidence-constrained OpenAI Structured Outputs with deterministic fallback.
+- Free deterministic and premium evidence-constrained OpenAI research tiers, with per-vertical deterministic fallback.
 - HTML, plain-text, and JSON rendering with escaped source content.
 - SQLite/SQLAlchemy persistence separated from Pydantic domain models.
-- Explicit `READY_FOR_REVIEW → APPROVED → SENT` workflow.
+- Review-first `READY_FOR_REVIEW -> APPROVED -> SENT` workflow plus separately guarded automatic delivery.
 - Console delivery for safe local development and opt-in SMTP configured through local secrets.
 - Typer CLI, typed extension protocols, fixtures, tests, and CI.
 
@@ -38,23 +38,28 @@ Research newsletters combine unreliable networks, untrusted source text, topic-s
 
 ```mermaid
 flowchart TD
-  A[Configured sources] --> B[Source connectors]
-  B --> C[Normalise and deduplicate]
-  C --> D[Research vertical registry]
-  D --> E1[AI Infrastructure]
-  D --> E2[Finance]
-  D --> E3[Semiconductors]
-  D --> E4[Technology Radar]
-  E1 --> F[Vertical research results]
-  E2 --> F
-  E3 --> F
-  E4 --> F
-  F --> G[Validation and ranking]
-  G --> H[Newsletter composer]
-  H --> I[HTML, text and JSON renderer]
-  I --> J[Ready for review]
-  J --> K[Explicit approval]
-  K --> L[Email provider]
+  A[RSS, APIs, research, community signals] --> B[Collect, normalize, deduplicate]
+  B --> C[Provenance and vertical scope]
+  C --> D{Subscriber tier}
+  D -->|Free| E[Deterministic analysis]
+  D -->|Premium| F[Bounded OpenAI structured analysis]
+  F -->|Per-vertical failure| E
+  E --> G[Validate citations and rank]
+  F --> G
+  G --> V1[AI Infrastructure]
+  G --> V2[Finance]
+  G --> V3[Semiconductors]
+  G --> V4[Technology Radar]
+  V1 --> H[Personalized vertical selection]
+  V2 --> H
+  V3 --> H
+  V4 --> H
+  H --> I[HTML, text and JSON rendering]
+  I --> J{Delivery workflow}
+  J -->|Interactive| K[Review and explicit approval]
+  J -->|Private opt-in| L[Automatic approval]
+  K --> M[SMTP or console provider]
+  L --> M
 ```
 
 The project is a modular monolith: a single Python application with domain, ingestion, research, newsletter, provider, and persistence boundaries. Read [ARCHITECTURE.md](ARCHITECTURE.md) for dependency rules, failure handling, and future service extraction.
@@ -121,14 +126,21 @@ By default, `send` uses `ConsoleEmailProvider`: it prints preview metadata and t
 
 ```mermaid
 flowchart LR
-  RSS[RSS] --> N[Normalisation]
+  RSS[RSS, Atom and APIs] --> N[Normalisation]
   N --> CL[Classification]
-  CL --> R[Research]
+  CL --> Tier{Subscriber tier}
+  Tier -->|Free| R[Deterministic research]
+  Tier -->|Premium| LLM[LLM research]
+  LLM -->|Failure| R
+  LLM --> V
   R --> V[Validation]
   V --> C[Composition]
   C --> Render[Rendering]
-  Render --> A[Approval]
-  A --> D[Delivery]
+  Render --> A{Delivery mode}
+  A -->|Interactive| Review[Review and approval]
+  A -->|Guarded scheduled| Auto[Automatic approval]
+  Review --> D[Delivery]
+  Auto --> D
 ```
 
 Source and vertical failures are isolated where possible, allowing a partial cited briefing. Configuration and database failures stop the command. See the [workflow guide](docs/user-guide/workflow.md).
@@ -145,9 +157,9 @@ Run `vortenix config validate` after edits. The [configuration reference](docs/u
 
 ## Research modes
 
-**Deterministic mode** is the current workflow and requires no AI service. It matches configured keywords, extracts concise source sentences, applies simple entity/pain-point heuristics, retains citations, and calculates weighted scores outside any prompt.
+**Deterministic mode** powers free subscribers and requires no AI service. It matches configured keywords, extracts concise source sentences, applies simple entity/pain-point heuristics, retains citations, and calculates weighted scores outside any prompt.
 
-**LLM mode** uses the optional `OpenAIProvider` and Pydantic Structured Outputs. It sends only bounded, keyword-matched configured documents, requires supplied document IDs for citations, rejects invented citation IDs, calculates scores in application code, and falls back per vertical to deterministic analysis on failure.
+**LLM mode** powers premium subscribers through the optional `OpenAIProvider` and Pydantic Structured Outputs. It sends only bounded, authorized, keyword-matched documents, requires supplied document IDs for citations, rejects invented citation IDs, calculates scores in application code, and falls back independently for each failed vertical. A premium edition records requested and actual analysis modes plus fallback warnings.
 
 Enable it locally:
 
@@ -205,7 +217,7 @@ vortenix subscribers list --audience anish_daily
 vortenix workflow run-personalized --audience anish_daily --demo
 ```
 
-Sources are collected once. Required verticals are analysed once per active research tier, because deterministic and LLM results are intentionally independent. Composition then creates one newsletter per subscriber containing only their selected sections and records the requested mode. Every newsletter remains `READY_FOR_REVIEW` until independently approved and sent.
+Sources are collected once. Required verticals are analysed once per active research tier, because deterministic and LLM results are intentionally independent. Composition creates one newsletter per subscriber containing only selected sections and records requested versus actual analysis. `run-personalized` stops at `READY_FOR_REVIEW`; the separately guarded `run-scheduled` command automatically approves and sends each subscriber independently.
 
 See the [CLI reference](docs/reference/cli.md) for current semantics and limitations.
 
@@ -245,7 +257,7 @@ The equivalent commands work directly on Windows where `make` is unavailable. St
 
 ## Roadmap
 
-Near-term work focuses on hardening ingestion, tests, migrations, type/lint strictness, SMTP delivery auditing, and deliberate LLM provider wiring. Later phases cover additional connectors, improved analysis, a review dashboard, publishing channels, knowledge modelling, and evidence-driven service extraction. See [ROADMAP.md](ROADMAP.md).
+Near-term work focuses on delivery idempotency, durable scheduling, ingestion observability, migrations, stronger corroboration, and SMTP delivery auditing. Later phases cover improved analysis, a review dashboard, publishing channels, knowledge modelling, and evidence-driven service extraction. See [ROADMAP.md](ROADMAP.md).
 
 ## Contributing
 

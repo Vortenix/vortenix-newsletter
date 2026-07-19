@@ -12,11 +12,14 @@ All notable changes are documented here. This project follows [Keep a Changelog]
 - Optional evidence-constrained OpenAI Structured Outputs with bounded inputs and deterministic fallback.
 - Per-subscriber deterministic (free) and LLM (premium) research tiers.
 - Requested-versus-actual analysis metadata and visible premium fallback warnings.
+- Expanded RSS/Atom and structured API ingestion with provenance and vertical scoping.
+- Guarded unattended per-subscriber delivery and GitHub Actions scheduling.
 
 ### Changed
 
 - Email subjects now use `Vortenix Newsletter - Daily Research Brief - YYYY-MM-DD`.
 - SMTP messages include a friendly sender name, date, and unique message ID.
+- Free subscribers use deterministic analysis; premium subscribers request LLM analysis with per-vertical deterministic fallback.
 
 ## [0.2.0] - 2026-07-18
 
@@ -27,9 +30,9 @@ All notable changes are documented here. This project follows [Keep a Changelog]
 - RSS ingestion, YAML vertical configuration, SQLite persistence, and provider protocols.
 - Local, Git-ignored SMTP provider and recipient selection.
 
-### Known limitations
+### Known limitations at release
 
-- OpenAI analysis is not selected by the current workflow.
+- At the 0.2.0 release, OpenAI analysis was not yet selected by the workflow; this is resolved in Unreleased.
 - Test coverage and strict typing are still being expanded.
 
 ## [0.1.0] - 2026-07-18
